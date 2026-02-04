@@ -139,7 +139,7 @@ def render_calculator(
         )
         res = reconcile_one(inp)
 
-        # Metrics
+        # Metrics (top line)
         m1, m2, m3, m4 = st.columns(4)
         display_conc_per_mL = total_mass_display / total_ml
         m1.metric(f"{unit}/mL", f"{display_conc_per_mL:.6f}")
@@ -147,19 +147,29 @@ def render_calculator(
         m3.metric("Priming (mg)", res["Priming_mg"])
         m4.metric("Waste (mg)", res["Waste_mg"])
 
-        # Remaining vs Expected
+        # -------- Vertical layout for Remaining vs Expected (mobile-friendly) --------
         st.markdown("### Remaining vs Expected")
-        table = pd.DataFrame([{
-            "Expected remaining (mL)": res["Expected_remaining_mL"],
-            f"Expected remaining ({unit})": to_display_mass(res["Expected_remaining_mg"], unit_to_mg),
-            "Entered remaining (mL)": res["Entered_remaining_mL"],
-            f"Entered remaining ({unit})": to_display_mass(res["Entered_remaining_mg"], unit_to_mg),
-            f"Discrepancy ({unit})": to_display_mass(res["Discrepancy_mg"], unit_to_mg),
-            "Discrepancy (mL)": res["Discrepancy_mL"],
-            "Threshold exceeded (>|5 mg| or >1 mL)": res["Threshold_exceeded"],
-            "Recommendation": res["Recommendation"],
-        }])
-        st.dataframe(table, use_container_width=True)
+
+        # A simple vertical, single-column “card” with bold labels and bullets
+        st.markdown(
+            f"""
+**Expected Remaining**
+• {res["Expected_remaining_mL"]} mL  
+• {to_display_mass(res["Expected_remaining_mg"], unit_to_mg)} {unit}
+
+**Entered Remaining**
+• {res["Entered_remaining_mL"]} mL  
+• {to_display_mass(res["Entered_remaining_mg"], unit_to_mg)} {unit}
+
+**Discrepancy**
+• {res["Discrepancy_mL"]} mL  
+• {to_display_mass(res["Discrepancy_mg"], unit_to_mg)} {unit}
+
+**Threshold exceeded (>|5 mg| or >1 mL):** {'Yes' if res["Threshold_exceeded"] else 'No'}
+
+**Recommendation:** {res["Recommendation"]}
+            """.strip()
+        )
 
         # Threshold transparency
         st.info(
