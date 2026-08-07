@@ -194,10 +194,10 @@ st.markdown("---")
 tabs = st.tabs(["Ketamine", "Morphine", "Fentanyl", "Dilaudid"])
 
 with tabs[0]:
-    # Ketamine 100 mg / 20 mL
+    # Ketamine 200 mg / 20 mL
     render_calculator(
         drug_name="Ketamine",
-        total_mass_display=100.0,
+        total_mass_display=200.0,
         total_ml=20.0,
         unit="mg",
         unit_to_mg=1.0,
